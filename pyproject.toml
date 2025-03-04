@@ -25,4 +25,5 @@ build-backend = "setuptools.build_meta"
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
 
-[tool.setuptools]
+[tool.setuptools.exclude-package-data]
+PowerModelsBackend = ["__pycache__/*", "*.pyc", "*.pyo"]
