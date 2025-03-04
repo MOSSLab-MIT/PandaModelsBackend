@@ -1,12 +1,14 @@
 [project]
 name = "PandaModelsBackend"
+version = "0.0.1"
 description = "A PowerModels Backend for Grid2Op using PandaModels"
 authors = [
     { name = "Ketan Bhardwaj", email = "ketanbj@gmail.com" }
 ]
 readme = "README.md"
 license = { file = "LICENSE" }
-dynamic = ["version"]
+requires-python = ">=3.12"
+
 [project.urls]
 repository = "https://github.com/gt-sse-center/PandaModelsBackend"
 
