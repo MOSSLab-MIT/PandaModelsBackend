@@ -27,6 +27,13 @@ jobs:
             runs-on: ubuntu-latest
             pytest: ""
 
+          - conda-env: null
+            python-version: "3.12"
+            julia-version: "1.10"
+            label: sys
+            runs-on: ubuntu-latest
+            pytest: ""
+
     name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }} • ${{ matrix.cfg.runs-on }}"
     runs-on: ${{ matrix.cfg.runs-on }}
 
@@ -35,8 +42,9 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Create Conda Environment
+    - name: Setup Conda Python ${{ matrix.cfg.python-version }} & Deps
       uses: conda-incubator/setup-miniconda@v3
+      if: matrix.cfg.label == 'conda'
       with:
         activate-environment: test
         environment-file: devtools/conda-envs/${{ matrix.cfg.conda-env }}.yaml
@@ -46,7 +54,18 @@ jobs:
         add-pip-as-python-dependency: true
         conda-remove-defaults: true
 
-    - name: Setup Julia
+    - name: Setup Python ${{ matrix.cfg.python-version }}
+      uses: actions/setup-python@v4
+      if: matrix.cfg.label == 'sys'
+      with:
+        python-version: ${{ matrix.cfg.python-version }}
+
+    - name: Setup Python Deps
+      if: matrix.cfg.label == 'sys'
+      run: |
+        pip install "numpy" "pandas" "scipy" "pytest" "grid2op" "julia"
+
+    - name: Setup Julia ${{ matrix.cfg.julia-version }}
       uses: julia-actions/setup-julia@v2
       with:
         version: ${{ matrix.cfg.julia-version }}
@@ -82,4 +101,19 @@ jobs:
     - name: Test PowerModels in Julia
       run: |
         julia -e 'using PyCall; math = pyimport("math"); print(math.sin(math.pi/4))'
+        julia -e 'using Pkg; Pkg.test("PowerModels")'
+        # PM testing above is clean but takes 30m
+
+    - name: Test PandaModels in Julia
+      run: |
+        julia -e 'using Pkg; Pkg.add(Pkg.PackageSpec(;name="Ipopt", version="0.9"))'
+        julia -e 'using Pkg; Pkg.status(); Pkg.status(outdated=true)'
+        julia -e 'using Pkg; Pkg.test("PandaModels")'
+        # PdM testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
+
+    - name: Test PowerModels in PandaPower
+      run: |
+        python-jl -m pytest -v $CONDA_PREFIX/lib/python3.12/site-packages/pandapower/test/opf/test_pandamodels_runpm.py
+        # use python-jl instead of python above if get a static libpython error
+        # PdP testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
 
