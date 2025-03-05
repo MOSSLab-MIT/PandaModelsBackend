@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - gha 
+      - gha
   pull_request:
     branches:
       - main
@@ -22,6 +22,7 @@ jobs:
         cfg:
           - conda-env: linux
             python-version: "3.12"
+            julia-version: "1.10"
             label: conda
             runs-on: ubuntu-latest
             pytest: ""
@@ -34,7 +35,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Create Environment
+    - name: Create Conda Environment
       uses: conda-incubator/setup-miniconda@v3
       with:
         activate-environment: test
@@ -44,4 +45,46 @@ jobs:
         show-channel-urls: true
         add-pip-as-python-dependency: true
         conda-remove-defaults: true
+
+    - name: Setup Julia
+      uses: julia-actions/setup-julia@v2
+      with:
+        version: ${{ matrix.cfg.julia-version }}
+        arch: x64
+
+    - name: Cache Julia
+      uses: julia-actions/cache@v2
+      with:
+        cache-name: ${{ matrix.cfg-runs-on }}-test-${{ matrix.cfg.julia-version }}-${{ matrix.cfg.python-version }}
+        cache-packages: false
+
+    - name: Build Documentation
+      run: |
+        python -m pip install . --no-deps
+        python -c "import qcelemental as q;print(q.__file__, q.__version__)"
+
+    - name: Install Julia power software
+      run: |
+        julia -e '
+            using Pkg
+            Pkg.add([
+                Pkg.PackageSpec(;name="Ipopt"),
+                Pkg.PackageSpec(;name="PowerModels", version="0.21.3"),
+                Pkg.PackageSpec(;name="PyCall"),
+                Pkg.PackageSpec(;url="https://github.com/loriab/PandaModels.jl", rev="update_pm")
+            ])'
+
+    - name: Environment information
+      run: |
+        pip list
+        pip list | grep -e power -e grid -e panda
+        which python python-jl julia
+        python --version
+        python-jl --version
+        julia --version
+        julia -e 'using Pkg; Pkg.status(); Pkg.status(outdated=true)'
+
+    - name: Test PowerModels in Julia
+      run: |
+        julia -e 'using PyCall; math = pyimport("math"); print(math.sin(math.pi/4))'
 
