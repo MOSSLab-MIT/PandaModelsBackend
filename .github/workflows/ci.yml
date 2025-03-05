@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - gha 
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "9 16 * * 1"
+
+jobs:
+  build:
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg:
+          - conda-env: linux
+            python-version: "3.12"
+            label: conda
+            runs-on: ubuntu-latest
+            pytest: ""
+
+    name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }} • ${{ matrix.cfg.runs-on }}"
+    runs-on: ${{ matrix.cfg.runs-on }}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Create Environment
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: test
+        environment-file: devtools/conda-envs/${{ matrix.cfg.conda-env }}.yaml
+        python-version: ${{ matrix.cfg.python-version }}
+        auto-activate-base: false
+        show-channel-urls: true
+        add-pip-as-python-dependency: true
+        conda-remove-defaults: true
+
