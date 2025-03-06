@@ -97,7 +97,7 @@ jobs:
         pip install -e .[tests]
 
     - name: Environment information
-      shell: bash -el {0}
+      shell: bash -e {0}
       run: |
         pip list
         pip list | grep -e power -e grid -e panda
@@ -127,6 +127,7 @@ jobs:
         julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
 
     - name: Test PowerModels in PandaPower
+      shell: bash -el {0}
       run: |
         python-jl -m pytest -v $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/pandapower/test/opf/test_pandamodels_runpm.py
         # use python-jl instead of python above if get a static libpython error
