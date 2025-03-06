@@ -114,7 +114,7 @@ jobs:
         julia -e 'using Pkg; Pkg.status(); Pkg.status(outdated=true)'
 
     - name: Test PowerModels in Julia
-      if: false
+      # if: false
       run: |
         julia -e 'using PyCall; math = pyimport("math"); print(math.sin(math.pi/4))'
         julia -e 'using Pkg; Pkg.test("PowerModels")'
@@ -131,6 +131,7 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
+        # fix hard coded path
 
     - name: Test PowerModels in PandaPower
       run: |
