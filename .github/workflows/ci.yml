@@ -22,12 +22,14 @@ jobs:
             julia-version: "1.10"
             label: conda
             runs-on: ubuntu-latest
+            shell: 'bash -l {0}'
 
           - conda-env: null
             python-version: "3.12"
             julia-version: "1.10"
             label: installer
             runs-on: ubuntu-latest
+            shell: 'bash -e {0}'
 
           - conda-env: null
             python-version: "3.12"
@@ -35,6 +37,11 @@ jobs:
             label: installer
             runs-on: macos-13
             # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
+            shell: 'bash -e {0}'
+
+    defaults:
+      run:
+        shell: ${{ matrix.cfg.shell }}
 
     name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }} • ${{ matrix.cfg.runs-on }}"
     runs-on: ${{ matrix.cfg.runs-on }}
@@ -97,7 +104,6 @@ jobs:
         pip install -e .[tests]
 
     - name: Environment information
-      shell: bash -e {0}
       run: |
         pip list
         pip list | grep -e power -e grid -e panda
@@ -127,7 +133,6 @@ jobs:
         julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
 
     - name: Test PowerModels in PandaPower
-      shell: bash -el {0}
       run: |
         python-jl -m pytest -v $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/pandapower/test/opf/test_pandamodels_runpm.py
         # use python-jl instead of python above if get a static libpython error
