@@ -141,8 +141,9 @@ jobs:
         # PdP testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
 
     - name: Test PandaModelsBackend
-      if: false  # for now since there's some issues
+      # if: false  # for now since there's some issues
       run: |
         cd tests
-        python test_backend_api.py
+        python test_basic_usage.py
+        # python test_backend_api.py
 
