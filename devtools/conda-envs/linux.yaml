@@ -10,7 +10,7 @@ dependencies:
   - stable-baselines3>=2.3.2
   - scipy
   - pyjulia  # brings julia
-  - pandapower
+  - pandapower=2
   - pytest-xdist  # optional, for testing
   - curl<8.10  # avoid segfault in Julia w/ curl v8.10 . recheck periodically
   - pip
