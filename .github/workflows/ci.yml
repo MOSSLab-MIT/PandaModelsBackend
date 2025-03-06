@@ -36,7 +36,7 @@ jobs:
             python-version: "3.12"
             julia-version: "1.10"
             label: installer
-            runs-on: macos-latest
+            runs-on: macos-14
 
     name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }} • ${{ matrix.cfg.runs-on }}"
     runs-on: ${{ matrix.cfg.runs-on }}
@@ -67,13 +67,12 @@ jobs:
     - name: Setup Python power software
       if: matrix.cfg.label == 'installer'
       run: |
-        pip install "numpy" "pandas" "scipy" "pytest" "grid2op" "julia"
+        pip install numpy pandas scipy pytest grid2op julia
 
     - name: Setup Julia ${{ matrix.cfg.julia-version }}
       uses: julia-actions/setup-julia@v2
       with:
         version: ${{ matrix.cfg.julia-version }}
-        arch: x64
 
     - name: Cache Julia
       uses: julia-actions/cache@v2

@@ -15,6 +15,7 @@ dependencies:
   - curl<8.10  # avoid segfault in Julia w/ curl v8.10 . recheck periodically
   - pip
   - pip:
+    - grid2op
     - lightsim2grid  # optional
     - matpowercaseframes  # optional
   # - cxx-compiler  # optional if needed for further pip packages
