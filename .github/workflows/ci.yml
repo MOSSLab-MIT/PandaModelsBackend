@@ -15,7 +15,7 @@ jobs:
   build:
     defaults:
       run:
-        shell: bash -el {0}
+        shell: bash -e {0}
     strategy:
       fail-fast: false
       matrix:
@@ -68,6 +68,7 @@ jobs:
     - name: Setup Python power software
       if: matrix.cfg.label == 'installer'
       run: |
+        uname -p
         which python pip
         python --version
         python -m pip install numpy pandas scipy pytest grid2op julia
