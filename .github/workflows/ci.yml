@@ -75,7 +75,7 @@ jobs:
         uname -p
         which python pip
         python --version
-        python -m pip install numpy pandas scipy pytest grid2op julia
+        python -m pip install numpy pandas scipy pytest grid2op julia pandapower=2
 
     - name: Setup Julia ${{ matrix.cfg.julia-version }}
       uses: julia-actions/setup-julia@v2
@@ -114,7 +114,7 @@ jobs:
         julia -e 'using Pkg; Pkg.status(); Pkg.status(outdated=true)'
 
     - name: Test PowerModels in Julia
-      # if: false
+      if: false
       run: |
         julia -e 'using PyCall; math = pyimport("math"); print(math.sin(math.pi/4))'
         julia -e 'using Pkg; Pkg.test("PowerModels")'
@@ -144,6 +144,6 @@ jobs:
       # if: false  # for now since there's some issues
       run: |
         cd tests
-        python test_basic_usage.py
+        python-jl test_basic_usage.py
         # python test_backend_api.py
 
