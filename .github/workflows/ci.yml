@@ -13,9 +13,6 @@ on:
 
 jobs:
   build:
-    defaults:
-      run:
-        shell: bash -e {0}
     strategy:
       fail-fast: false
       matrix:
@@ -100,6 +97,7 @@ jobs:
         pip install -e .[tests]
 
     - name: Environment information
+      shell: bash -el {0}
       run: |
         pip list
         pip list | grep -e power -e grid -e panda
@@ -122,6 +120,11 @@ jobs:
         julia -e 'using Pkg; Pkg.status(); Pkg.status(outdated=true)'
         julia -e 'using Pkg; Pkg.test("PandaModels")'
         # PdM testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
+
+    - name: Special setup Mac
+      if: runner.os == 'macOS'
+      run: |
+        julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
 
     - name: Test PowerModels in PandaPower
       run: |
