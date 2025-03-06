@@ -75,7 +75,7 @@ jobs:
         uname -p
         which python pip
         python --version
-        python -m pip install numpy pandas scipy pytest grid2op julia pandapower=2
+        python -m pip install numpy pandas scipy pytest grid2op julia "pandapower==2"
 
     - name: Setup Julia ${{ matrix.cfg.julia-version }}
       uses: julia-actions/setup-julia@v2
