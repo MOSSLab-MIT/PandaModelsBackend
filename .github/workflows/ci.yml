@@ -13,6 +13,9 @@ on:
 
 jobs:
   build:
+    defaults:
+      run:
+        shell: bash -el {0}
     strategy:
       fail-fast: false
       matrix:
@@ -33,7 +36,8 @@ jobs:
             python-version: "3.12"
             julia-version: "1.10"
             label: installer
-            runs-on: macos-14
+            runs-on: macos-13
+            # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
 
     name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }} • ${{ matrix.cfg.runs-on }}"
     runs-on: ${{ matrix.cfg.runs-on }}
