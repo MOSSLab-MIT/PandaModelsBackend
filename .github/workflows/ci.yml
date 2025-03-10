@@ -141,8 +141,8 @@ jobs:
       run: |
         # fix hard coded path
         julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
-        sed -E -i.bak "s;nb_retry=10;nb_retry=50;g" /Users/runner/hostedtoolcache/Python/3.12.9/x64/lib/python3.12/site-packages/grid2op/grid2op/MakeEnv/Make.py
-        sed -E -i.bak "s;time.sleep(1);time.sleep(3);g" /Users/runner/hostedtoolcache/Python/3.12.9/x64/lib/python3.12/site-packages/grid2op/grid2op/MakeEnv/Make.py
+        sed -E -i.bak "s;nb_retry=10;nb_retry=50;g" /Users/runner/hostedtoolcache/Python/3.12.9/x64/lib/python3.12/site-packages/grid2op/MakeEnv/Make.py
+        sed -E -i.bak "s;time.sleep(1);time.sleep(3);g" /Users/runner/hostedtoolcache/Python/3.12.9/x64/lib/python3.12/site-packages/grid2op/MakeEnv/Make.py
 
     - name: Test PowerModels in PandaPower
       run: |
@@ -160,3 +160,6 @@ jobs:
         python-jl test_basic_usage.py
         # python test_backend_api.py
 
+    - name: Special setup Delay
+      run: |
+        ls $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv
