@@ -137,7 +137,7 @@ jobs:
         # PdM testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
 
     - name: Special setup Mac
-      if: matrix.cfg.label == 'conda' && runner.os == 'macOS'
+      if: matrix.cfg.label == 'installer' && runner.os == 'macOS'
       run: |
         # fix hard coded path
         julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
