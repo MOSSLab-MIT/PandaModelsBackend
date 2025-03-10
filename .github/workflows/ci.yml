@@ -36,7 +36,8 @@ jobs:
             label: installer
             runs-on: macos-13
             # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
-            shell: 'bash -e {0}'
+            #shell: 'bash -e {0}'
+            shell: bash
 
           - conda-env: linux
             python-version: "3.12"
@@ -144,10 +145,10 @@ jobs:
           :
           julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
         fi
-        if [[ "${{ matrix.cfg.label }}" == "conda" ]]; then
-          :
-          julia -e 'ENV["PYTHON"]="/Users/runner/miniconda3/envs/test/bin/python"; using Pkg; Pkg.build("PyCall")'
-        fi
+        #if [[ "${{ matrix.cfg.label }}" == "conda" ]]; then
+        #  :
+        #  julia -e 'ENV["PYTHON"]="/Users/runner/miniconda3/envs/test/bin/python"; using Pkg; Pkg.build("PyCall")'
+        #fi
 
     - name: Test PowerModels in PandaPower
       run: |
