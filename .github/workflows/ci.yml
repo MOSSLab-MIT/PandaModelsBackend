@@ -30,6 +30,13 @@ jobs:
             runs-on: ubuntu-latest
             shell: 'bash -e {0}'
 
+          - conda-env: unix
+            python-version: "3.12"
+            julia-version: "1.10"
+            label: conda
+            runs-on: macos-13
+            shell: 'bash -l {0}'
+
           - conda-env: null
             python-version: "3.12"
             julia-version: "1.10"
@@ -37,13 +44,6 @@ jobs:
             runs-on: macos-13
             # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
             shell: 'bash -e {0}'
-
-          - conda-env: unix
-            python-version: "3.12"
-            julia-version: "1.10"
-            label: conda
-            runs-on: macos-13
-            shell: 'bash -l {0}'
 
     defaults:
       run:
@@ -57,7 +57,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup Conda Python ${{ matrix.cfg.python-version }} and power software
+    - name: Install Conda Python ${{ matrix.cfg.python-version }} and power software
       if: matrix.cfg.label == 'conda'
       uses: conda-incubator/setup-miniconda@v3
       with:
@@ -69,13 +69,13 @@ jobs:
         add-pip-as-python-dependency: true
         conda-remove-defaults: true
 
-    - name: Setup Python ${{ matrix.cfg.python-version }}
+    - name: Install Python ${{ matrix.cfg.python-version }}
       if: matrix.cfg.label == 'installer'
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.cfg.python-version }}
 
-    - name: Setup Python power software
+    - name: Install Python power software
       if: matrix.cfg.label == 'installer'
       run: |
         uname -p
@@ -83,7 +83,7 @@ jobs:
         python --version
         python -m pip install numpy pandas scipy pytest grid2op julia "pandapower==2.14.11"
 
-    - name: Setup Julia ${{ matrix.cfg.julia-version }}
+    - name: Install Julia ${{ matrix.cfg.julia-version }}
       if: matrix.cfg.label == 'installer'
       uses: julia-actions/setup-julia@v2
       with:
@@ -122,7 +122,7 @@ jobs:
         julia -e 'using Pkg; Pkg.status(); Pkg.status(outdated=true)'
 
     - name: Test PowerModels in Julia
-      if: false
+      # if: false
       run: |
         julia -e 'using PyCall; math = pyimport("math"); print(math.sin(math.pi/4))'
         julia -e 'using Pkg; Pkg.test("PowerModels")'
@@ -133,16 +133,22 @@ jobs:
         julia -e 'using Pkg; Pkg.add(Pkg.PackageSpec(;name="Ipopt", version="0.9"))'
         julia -e 'using Pkg; Pkg.status(); Pkg.status(outdated=true)'
         julia -e 'using PandaModels'
-        #TMPjulia -e 'using Pkg; Pkg.test("PandaModels")'
+        julia -e 'using Pkg; Pkg.test("PandaModels")'
         # PdM testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
+        # shortcut this step by commenting out the Pkg.test above
 
     - name: Special setup Mac
       if: matrix.cfg.label == 'installer' && runner.os == 'macOS'
       run: |
-        # fix hard coded path
+        # warning: hard coded path
         julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
-        sed -E -i.bak "s;nb_retry=10;nb_retry=50;g" /Users/runner/hostedtoolcache/Python/3.12.9/x64/lib/python3.12/site-packages/grid2op/MakeEnv/Make.py
-        sed -E -i.bak "s;time.sleep(1);time.sleep(3);g" /Users/runner/hostedtoolcache/Python/3.12.9/x64/lib/python3.12/site-packages/grid2op/MakeEnv/Make.py
+
+    - name: Special setup download delay
+      if: runner.os == 'macOS'
+      # file download in next section is flaky, esp. for Mac. use `sed -i "s;;;g"` for non-Mac
+      run: |
+        sed -E -i.bak "s;nb_retry=10;nb_retry=50;g" $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv/Make.py
+        sed -E -i.bak "s;time.sleep(1);time.sleep(3);g" $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv/Make.py
 
     - name: Test PowerModels in PandaPower
       run: |
@@ -159,7 +165,3 @@ jobs:
         which python python-jl
         python-jl test_basic_usage.py
         # python test_backend_api.py
-
-    - name: Special setup Delay
-      run: |
-        ls $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv
