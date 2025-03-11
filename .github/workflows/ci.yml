@@ -191,7 +191,7 @@ jobs:
     - build
     runs-on: ubuntu-latest
     environment:
-      name: pypi
+      name: testpypi  # pypi normally
       url: https://pypi.org/p/pandamodelsbackend
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
