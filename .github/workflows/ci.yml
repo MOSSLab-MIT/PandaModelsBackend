@@ -151,6 +151,7 @@ jobs:
         sed -E -i.bak "s;time.sleep(1);time.sleep(8);g" $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv/Make.py
 
     - name: Test PowerModels in PandaPower
+      if: false
       run: |
         which python python-jl
         python-jl -m pytest -v $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/pandapower/test/opf/test_pandamodels_runpm.py
@@ -158,9 +159,11 @@ jobs:
         # loc is simply $CONDA_PREFIX but the setup-python counterpart env.pythonLocation seems broken
         # PdP testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
 
-    - name: Test PandaModelsBackend
+    - name: Test PandaModelsBackend (basic)
       run: |
-        cd tests
         which python python-jl
-        python-jl test_basic_usage.py
-        python-jl test_backend_api.py
+        python-jl tests/test_basic_usage.py
+
+    - name: Test PandaModelsBackend (API)
+      run: |
+        python-jl test/test_backend_api.py
