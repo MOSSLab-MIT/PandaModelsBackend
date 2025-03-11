@@ -166,4 +166,4 @@ jobs:
 
     - name: Test PandaModelsBackend (API)
       run: |
-        python-jl test/test_backend_api.py
+        python-jl tests/test_backend_api.py
