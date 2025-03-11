@@ -204,4 +204,3 @@ jobs:
         path: dist/
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      id-token: write  # IMPORTANT: mandatory for trusted publishing
