@@ -1,6 +1,6 @@
 [project]
 name = "pandamodelsbackend"
-version = "0.0.1"
+version = "0.0.2"
 description = "A PowerModels Backend for Grid2Op using PandaModels through PandaPower"
 authors = [
     { name = "Ketan Bhardwaj", email = "ketanbj@gmail.com" }

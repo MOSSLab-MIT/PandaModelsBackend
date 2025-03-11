@@ -1,5 +1,6 @@
 # PandaModelsBackend
-Provides a high fidelity backend for grid2op that uses PowerModels.jl. It achieves this using pandapower interface that calls PandaModels using PyCall to call julia functions from python.
+
+PandaModelsBackend provides a high-fidelity backend for [Grid2op](https://github.com/Grid2op/grid2op) that uses [PowerModels.jl](https://github.com/lanl-ansi/PowerModels.jl). It achieves this using a [pandapower](https://github.com/e2nIEE/pandapower) interface that calls [PandaModels.jl](https://github.com/e2nIEE/PandaModels.jl) using PyCall to call Julia functions from Python.
 
 ## Installation
 ```pip install pandamodelsbackend```
@@ -7,7 +8,7 @@ Provides a high fidelity backend for grid2op that uses PowerModels.jl. It achiev
 ## Refer to [tests/test_basic_usage.py]()
 
 ```
-from PandaModelsBackend import PandaModelsBackend
+from pandamodelsbackend import PandaModelsBackend
 
 pp_net = pp.from_json(network_file)  # Load PandaPower JSON
 .
