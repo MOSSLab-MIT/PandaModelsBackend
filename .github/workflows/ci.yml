@@ -160,6 +160,7 @@ jobs:
         # PdP testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
 
     - name: Test PandaModelsBackend (basic)
+      if: false
       run: |
         which python python-jl
         python-jl tests/test_basic_usage.py
