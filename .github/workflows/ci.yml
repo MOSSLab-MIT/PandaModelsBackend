@@ -16,12 +16,12 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-          - conda-env: unix
-            python-version: "3.12"
-            julia-version: "1.10"
-            label: conda
-            runs-on: ubuntu-latest
-            shell: 'bash -l {0}'
+          #- conda-env: unix
+          #  python-version: "3.12"
+          #  julia-version: "1.10"
+          #  label: conda
+          #  runs-on: ubuntu-latest
+          #  shell: 'bash -l {0}'
 
           - conda-env: null
             python-version: "3.12"
@@ -30,20 +30,20 @@ jobs:
             runs-on: ubuntu-latest
             shell: 'bash -e {0}'
 
-          - conda-env: unix
-            python-version: "3.12"
-            julia-version: "1.10"
-            label: conda
-            runs-on: macos-13
-            shell: 'bash -l {0}'
+          #- conda-env: unix
+          #  python-version: "3.12"
+          #  julia-version: "1.10"
+          #  label: conda
+          #  runs-on: macos-13
+          #  shell: 'bash -l {0}'
 
-          - conda-env: null
-            python-version: "3.12"
-            julia-version: "1.10"
-            label: installer
-            runs-on: macos-13
-            # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
-            shell: 'bash -e {0}'
+          #- conda-env: null
+          #  python-version: "3.12"
+          #  julia-version: "1.10"
+          #  label: installer
+          #  runs-on: macos-13
+          #  # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
+          #  shell: 'bash -e {0}'
 
     defaults:
       run:
@@ -194,4 +194,14 @@ jobs:
       name: pypi
       url: https://pypi.org/p/pandamodelsbackend
     permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: python-package-distributions
+        path: dist/
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
       id-token: write  # IMPORTANT: mandatory for trusted publishing
