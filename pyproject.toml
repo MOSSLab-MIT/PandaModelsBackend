@@ -54,8 +54,8 @@ build-backend = "setuptools.build_meta"
 packages = ["pandamodelsbackend"]
 
 [tool.setuptools_scm]
-version_scheme = "guess-next-dev"
-local_scheme = "no-local-version"
+#version_scheme = "guess-next-dev"
+#local_scheme = "no-local-version"
 
 [tool.setuptools.exclude-package-data]
 PowerModelsBackend = ["__pycache__/*", "*.pyc", "*.pyo"]
