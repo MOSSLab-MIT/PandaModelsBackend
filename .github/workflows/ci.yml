@@ -56,6 +56,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        persist-credentials: false
 
     - name: Install Conda Python ${{ matrix.cfg.python-version }} and power software
       if: matrix.cfg.label == 'conda'
@@ -144,11 +145,11 @@ jobs:
         julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
 
     - name: Special setup download delay
-      if: runner.os == 'macOS'
-      # file download in next section is flaky, esp. for Mac. use `sed -i "s;;;g"` for non-Mac
+      if: false  # runner.os == 'macOS'
+      # file download in (basic) section is flaky for Mac. use `sed -i "s;;;g"` for non-Mac
       run: |
-        sed -E -i.bak "s;nb_retry=10;nb_retry=50;g" $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv/Make.py
-        sed -E -i.bak "s;time.sleep(1);time.sleep(3);g" $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv/Make.py
+        sed -E -i.bak "s;nb_retry=10;nb_retry=100;g" $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv/Make.py
+        sed -E -i.bak "s;time.sleep(1);time.sleep(8);g" $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv/Make.py
 
     - name: Test PowerModels in PandaPower
       run: |
@@ -158,10 +159,115 @@ jobs:
         # loc is simply $CONDA_PREFIX but the setup-python counterpart env.pythonLocation seems broken
         # PdP testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
 
-    - name: Test PandaModelsBackend
-      # if: false  # for now since there's some issues
+    - name: Test PandaModelsBackend (basic)
+      if: runner.os == 'Linux'
       run: |
-        cd tests
         which python python-jl
-        python-jl test_basic_usage.py
-        # python test_backend_api.py
+        python-jl tests/test_basic_usage.py
+
+    - name: Test PandaModelsBackend (API)
+      run: |
+        python-jl tests/test_backend_api.py
+
+    - name: Install pypa/build & build a binary wheel and a source tarball
+      if: matrix.cfg.label == 'installer' && runner.os == 'Linux'
+      run: |
+        python -m pip install build --user
+        python -m build
+
+    - name: Store the distribution packages
+      if: matrix.cfg.label == 'installer' && runner.os != 'macOS'
+      uses: actions/upload-artifact@v4
+      with:
+        name: python-package-distributions
+        path: dist/
+
+  publish-to-pypi:
+    name: >-
+      Publish Python 🐍 distribution 📦 to PyPI
+    if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
+    needs:
+    - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pandamodelsbackend
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: python-package-distributions
+        path: dist/
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    name: >-
+      Sign the Python 🐍 distribution 📦 with Sigstore
+      and upload them to GitHub Release
+    needs:
+    - publish-to-pypi
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # IMPORTANT: mandatory for making GitHub Releases
+      id-token: write  # IMPORTANT: mandatory for sigstore
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: python-package-distributions
+        path: dist/
+    - name: Sign the dists with Sigstore
+      uses: sigstore/gh-action-sigstore-python@v3.0.0
+      with:
+        inputs: >-
+          ./dist/*.tar.gz
+          ./dist/*.whl
+    - name: Create GitHub Release
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: >-
+        gh release create
+        "$GITHUB_REF_NAME"
+        --repo "$GITHUB_REPOSITORY"
+        --notes ""
+    - name: Upload artifact signatures to GitHub Release
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      # Upload to GitHub Release using the `gh` CLI.
+      # `dist/` contains the built packages, and the
+      # sigstore-produced signatures and certificates.
+      run: >-
+        gh release upload
+        "$GITHUB_REF_NAME" dist/**
+        --repo "$GITHUB_REPOSITORY"
+
+  publish-to-testpypi:
+    name: Publish Python 🐍 distribution 📦 to TestPyPI
+    needs:
+    - build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/pandamodelsbackend
+
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: python-package-distributions
+        path: dist/
+    - name: Publish distribution 📦 to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        verbose: true

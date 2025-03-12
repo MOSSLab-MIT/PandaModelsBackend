@@ -1,5 +1,5 @@
 import grid2op
-from PandaModelsBackend import PandaModelsBackend
+from pandamodelsbackend import PandaModelsBackend
 import pandapower as pp
 import pandapower.converter as pp_converter
 import os
