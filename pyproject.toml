@@ -1,28 +1,50 @@
 [project]
 name = "pandamodelsbackend"
-version = "0.0.2"
-description = "A PowerModels Backend for Grid2Op using PandaModels through PandaPower"
+dynamic = ["version"]
+description = "A PowerModels Backend for Grid2op using PandaModels through PandaPower"
 authors = [
     { name = "Ketan Bhardwaj", email = "ketanbj@gmail.com" }
 ]
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.12"
+# py312 taken from Donti env; other py versions untested
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "pandapower",
+    # packaging?
+    "grid2op",
+]
 
 [project.urls]
 repository = "https://github.com/gt-sse-center/PandaModelsBackend"
+changelog = "https://github.com/gt-sse-center/PandaModelsBackend/blob/main/changelog.md"
+issues = "https://github.com/gt-sse-center/PandaModelsBackend/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest",
     "setuptools",
+    # "pytest",
     # grid2op uses pkg_resources
+]
+numba = [
+    "numba",
 ]
 
 [build-system]
 requires = [
-    "setuptools",
-    "setuptools-scm",
+    "setuptools>=64",
+    "setuptools-scm>=8",
     "wheel",
     "pip"
 ]
