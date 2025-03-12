@@ -16,12 +16,12 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-          #- conda-env: unix
-          #  python-version: "3.12"
-          #  julia-version: "1.10"
-          #  label: conda
-          #  runs-on: ubuntu-latest
-          #  shell: 'bash -l {0}'
+          - conda-env: unix
+            python-version: "3.12"
+            julia-version: "1.10"
+            label: conda
+            runs-on: ubuntu-latest
+            shell: 'bash -l {0}'
 
           - conda-env: null
             python-version: "3.12"
@@ -30,20 +30,20 @@ jobs:
             runs-on: ubuntu-latest
             shell: 'bash -e {0}'
 
-          #- conda-env: unix
-          #  python-version: "3.12"
-          #  julia-version: "1.10"
-          #  label: conda
-          #  runs-on: macos-13
-          #  shell: 'bash -l {0}'
+          - conda-env: unix
+            python-version: "3.12"
+            julia-version: "1.10"
+            label: conda
+            runs-on: macos-13
+            shell: 'bash -l {0}'
 
-          #- conda-env: null
-          #  python-version: "3.12"
-          #  julia-version: "1.10"
-          #  label: installer
-          #  runs-on: macos-13
-          #  # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
-          #  shell: 'bash -e {0}'
+          - conda-env: null
+            python-version: "3.12"
+            julia-version: "1.10"
+            label: installer
+            runs-on: macos-13
+            # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
+            shell: 'bash -e {0}'
 
     defaults:
       run:
@@ -123,7 +123,7 @@ jobs:
         julia -e 'using Pkg; Pkg.status(); Pkg.status(outdated=true)'
 
     - name: Test PowerModels in Julia
-      if: false
+      # if: false
       run: |
         julia -e 'using PyCall; math = pyimport("math"); print(math.sin(math.pi/4))'
         julia -e 'using Pkg; Pkg.test("PowerModels")'
@@ -134,7 +134,7 @@ jobs:
         julia -e 'using Pkg; Pkg.add(Pkg.PackageSpec(;name="Ipopt", version="0.9"))'
         julia -e 'using Pkg; Pkg.status(); Pkg.status(outdated=true)'
         julia -e 'using PandaModels'
-        #julia -e 'using Pkg; Pkg.test("PandaModels")'
+        julia -e 'using Pkg; Pkg.test("PandaModels")'
         # PdM testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
         # shortcut this step by commenting out the Pkg.test above
 
@@ -145,14 +145,13 @@ jobs:
         julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
 
     - name: Special setup download delay
-      if: runner.os == 'macOS'
-      # file download in next section is flaky, esp. for Mac. use `sed -i "s;;;g"` for non-Mac
+      if: false  # runner.os == 'macOS'
+      # file download in (basic) section is flaky for Mac. use `sed -i "s;;;g"` for non-Mac
       run: |
         sed -E -i.bak "s;nb_retry=10;nb_retry=100;g" $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv/Make.py
         sed -E -i.bak "s;time.sleep(1);time.sleep(8);g" $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/grid2op/MakeEnv/Make.py
 
     - name: Test PowerModels in PandaPower
-      if: false
       run: |
         which python python-jl
         python-jl -m pytest -v $(dirname $(which python))/../lib/python${{ matrix.cfg.python-version }}/site-packages/pandapower/test/opf/test_pandamodels_runpm.py
@@ -161,7 +160,7 @@ jobs:
         # PdP testing above has a couple failures b/c Ipopt=1 unless downgrade (taking PM with it)
 
     - name: Test PandaModelsBackend (basic)
-      if: false
+      if: runner.os == 'Linux'
       run: |
         which python python-jl
         python-jl tests/test_basic_usage.py
@@ -171,7 +170,7 @@ jobs:
         python-jl tests/test_backend_api.py
 
     - name: Install pypa/build & build a binary wheel and a source tarball
-      if: matrix.cfg.label == 'installer' && runner.os != 'macOS'
+      if: matrix.cfg.label == 'installer' && runner.os == 'Linux'
       run: |
         python -m pip install build --user
         python -m build
@@ -271,3 +270,4 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         repository-url: https://test.pypi.org/legacy/
+        verbose: true
