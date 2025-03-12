@@ -71,3 +71,13 @@ pip install -e .
 cd tests
 python test_backend_api.py
 ```
+
+## Release Procedure
+
+* On a local clone on branch `main`, update the [CHANGELOG](changelog.md) with PRs, the new version number, and the release date. Commit it.
+* Make an annotated tag for the new version. Push it along with any cleanup commits (e.g., changelog above). (If you've forked the repo, "origin" will probably be "upstream". See `git remote -v` for names.
+```
+git tag -a v0.5.0 -m "v0.5.0"
+git push --atomic origin main v0.5.0
+```
+* The CI workflow will take over publication to [PyPI](https://pypi.org/project/pandamodelsbackend/) and making a GitHub release. You can edit the frontmatter for the latter through the GitHub interface with any particular details (and perhaps a link to the CHANGELOG section).
