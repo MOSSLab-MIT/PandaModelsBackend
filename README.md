@@ -2,7 +2,7 @@
 
 PandaModelsBackend provides a high-fidelity backend for [Grid2op](https://github.com/Grid2op/grid2op) that uses [PowerModels.jl](https://github.com/lanl-ansi/PowerModels.jl). It achieves this using a [pandapower](https://github.com/e2nIEE/pandapower) interface that calls [PandaModels.jl](https://github.com/e2nIEE/PandaModels.jl) using PyCall to call Julia functions from Python.
 
-<img src="https://github.com/gt-sse-center/PandaModelsBackend/blob/rearr/devtools/power_software_map.png" height=450>
+<img src="https://github.com/gt-sse-center/PandaModelsBackend/blob/main/devtools/power_software_map.png" height=450>
 
 ## Installation
 ```pip install pandamodelsbackend```
