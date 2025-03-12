@@ -16,7 +16,7 @@ pp_net = pp.from_json(network_file)  # Load PandaPower JSON
 .
 .
 backend = PandaModelsBackend(pp_net)
-env = grid2op.make(env_name, backend=backend) 
+env = grid2op.make(env_name, backend=backend)
 .
 ```
 
@@ -52,7 +52,7 @@ env = grid2op.make(env_name, backend=backend)
 
         On MacOS:
         ```ENV["PYTHON"]="<your python path>"```
-    
+
      Access the package manager again in julia by typing ]. Now install the packages: ```add PyCall```. To pass the python environment variable, running build PyCall inside the julia package manager may be necessary.
 
 ### Using Conda
@@ -70,14 +70,53 @@ pip install -e .
 ```
 cd tests
 python test_backend_api.py
+# depending on installation, `python-jl` may be needed instead of `python` above
 ```
 
 ## Release Procedure
 
 * On a local clone on branch `main`, update the [CHANGELOG](changelog.md) with PRs, the new version number, and the release date. Commit it.
-* Make an annotated tag for the new version. Push it along with any cleanup commits (e.g., changelog above). (If you've forked the repo, "origin" will probably be "upstream". See `git remote -v` for names.
+* Make an annotated tag for the new version. Push it along with any cleanup commits (e.g., changelog above). If you've forked the repo, "origin" will probably be "upstream". See `git remote -v` for names.
 ```
 git tag -a v0.5.0 -m "v0.5.0"
 git push --atomic origin main v0.5.0
 ```
-* The CI workflow will take over publication to [PyPI](https://pypi.org/project/pandamodelsbackend/) and making a GitHub release. You can edit the frontmatter for the latter through the GitHub interface with any particular details (and perhaps a link to the CHANGELOG section).
+* The CI workflow will take over publication to [PyPI](https://pypi.org/project/pandamodelsbackend/) and making a GitHub release. You can edit the frontmatter for the latter through the GitHub web interface with any particular details (and perhaps a link to the CHANGELOG section).
+
+## Troubleshooting the Software Stack
+
+1. **Problem:**
+   Your Python interpreter "/path/to/miniconda/envs/rl2grid/bin/python"
+   is statically linked to libpython. Currently, PyJulia does not fully
+   support such Python interpreter.
+
+   **Solution:**
+   Use `python-jl` from conda (or Julia installation) instead of `python`.
+
+2. **Problem:**
+   A pip installation involves compiling, and system compilers aren't working.
+
+   **Solution:**
+   `conda install cxx-compiler -c conda-forge` and rerun pip.
+
+3. **Problem:**
+   AttributeError in pandapower file d2Sbus_dV2.
+
+   **Solution:**
+   This was fixed between v2.14.9 and master for csr_matrix?. Alternately, edit the `diagV` to below:
+   ```
+   /path/to/site-packages/pandapower/pypower/d2Sbus_dV2.py:    try:                         # added
+   /path/to/site-packages/pandapower/pypower/d2Sbus_dV2.py:        D = Ybus.H * diagV       # indented
+   /path/to/site-packages/pandapower/pypower/d2Sbus_dV2.py:    except AttributeError:       # added
+   /path/to/site-packages/pandapower/pypower/d2Sbus_dV2.py:        D = Ybus.getH() * diagV  # added
+   ```
+
+4. **Problem:**
+   Package testing for PowerModels, PandaModels, or PandaPower shows a few (not all) failures.
+
+   **Solution:**
+   For a clean test suite, PowerModels needs Ipopt>=1 and the others need Ipopt<1. To toggle, do
+   something like the below. See [CI](.github/workflows/ci.yml) for a known working testing sequence.
+   ```
+   julia -e 'using Pkg; Pkg.add(Pkg.PackageSpec(;name="Ipopt", version="0.9")); using Ipopt'
+   ```

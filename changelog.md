@@ -29,7 +29,7 @@
 #### Misc.
 
 
-## v0.1.1 / 2025-MM-DD (Unreleased)
+## v0.1.1 / 2025-3-12
 
 #### Breaking Changes
 
