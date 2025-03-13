@@ -6,7 +6,7 @@ channels:
   - conda-forge
 dependencies:
   - python
-  - numpy
+  - numpy=1       # restriction from pandapower
   - scipy
   - pandas
   - pyjulia       # brings julia
