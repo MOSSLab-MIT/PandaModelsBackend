@@ -178,7 +178,7 @@ jobs:
         python -m build
 
     - name: Store the distribution packages
-      if: matrix.cfg.label == 'installer' && runner.os != 'Linux'
+      if: matrix.cfg.label == 'installer' && runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
         name: python-package-distributions
