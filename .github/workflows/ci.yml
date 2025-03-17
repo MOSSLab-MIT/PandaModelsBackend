@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
   pull_request:
     branches:
       - main
@@ -176,7 +178,7 @@ jobs:
         python -m build
 
     - name: Store the distribution packages
-      if: matrix.cfg.label == 'installer' && runner.os != 'macOS'
+      if: matrix.cfg.label == 'installer' && runner.os != 'Linux'
       uses: actions/upload-artifact@v4
       with:
         name: python-package-distributions
