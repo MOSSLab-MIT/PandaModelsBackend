@@ -74,11 +74,13 @@ There are a lot of acceptable ways to get Python+Julia working, so as long as [`
 
 #### Using Conda
 
-An install script is provided at [
+A Linux install script is provided at [linux_conda_install.sh](devtools/linux_conda_install.sh) using Conda for Python and Julia dependencies. A *snapshot* (not necessarily latest) is shown below.
+
 0. copy a conda env spec file like [unix.yaml](devtools/conda-envs/unix.yaml). Customize python version, environment name, etc.
 
-https://github.com/gt-sse-center/PandaModelsBackend/blob/da874c695ccf039514c60e6fbde0abb02dc16b5b/devtools/linux_conda_install.sh#L12-L54
+https://github.com/gt-sse-center/PandaModelsBackend/blob/d13dcd6fd43edecb3819562ec11398aa576d71e7/devtools/linux_conda_install.sh#L16-L58
 
+<!--
 ```
 # 1. create a new conda env from the spec.
 conda env create -f unix.yaml && conda activate test
@@ -125,6 +127,7 @@ python-jl tests/test_backend_api.py
 #>Ran 31 tests in 58.499s
 #>OK
 ```
+-->
 
 -----
 
