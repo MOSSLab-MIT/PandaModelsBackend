@@ -21,14 +21,19 @@
 #### Breaking Changes
 
 #### New Features
- * [\#4] (https://github.com/gt-sse-center/PandaModelsBackend/pull/4) Maint --
-   added Conda install notes, refined dependencies.
 
 #### Enhancements
 
 #### Bug Fixes
 
 #### Misc.
+
+
+## v0.1.3 / 2025-03-17
+
+#### New Features
+ * [\#4] (https://github.com/gt-sse-center/PandaModelsBackend/pull/4) Maint --
+   added Conda install notes, refined dependencies.
 
 
 ## v0.1.1 / 2025-3-12
