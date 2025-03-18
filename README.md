@@ -78,7 +78,7 @@ There are a lot of acceptable ways to get Python+Julia working, so as long as [`
 
 0. copy a conda env spec file like [unix.yaml](devtools/conda-envs/unix.yaml). Customize python version, environment name, etc.
 
-https://github.com/gt-sse-center/PandaModelsBackend/blob/73f6a08/devtools/linux_conda_install.sh#L11-L55
+https://github.com/gt-sse-center/PandaModelsBackend/blob/da874c695ccf039514c60e6fbde0abb02dc16b5b/devtools/linux_conda_install.sh#L11-L55
 
 ```
 # 1. create a new conda env from the spec.
