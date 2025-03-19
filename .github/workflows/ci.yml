@@ -144,7 +144,7 @@ jobs:
     - name: Check all-in-one install script
       if: matrix.cfg.label == 'script'
       run: |
-        conda init
+        source /usr/share/miniconda/bin/activate
         bash devtools/linux_conda_install.sh
 
     - name: Test PowerModels in Julia
