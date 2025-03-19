@@ -15,7 +15,7 @@ on:
 jobs:
   build:
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         cfg:
           - conda-env: unix
@@ -52,7 +52,7 @@ jobs:
             julia-version: "1.10"
             label: script
             runs-on: ubuntu-latest
-            shell: 'bash -e {0}'
+            shell: 'bash -el {0}'
 
     defaults:
       run:
@@ -71,8 +71,6 @@ jobs:
       if: matrix.cfg.label == 'script'
       uses: conda-incubator/setup-miniconda@v3
       with:
-        activate-environment: ""
-        auto-activate-base: true
         python-version: ${{ matrix.cfg.python-version }}
         show-channel-urls: true
         add-pip-as-python-dependency: true
