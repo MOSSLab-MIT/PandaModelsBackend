@@ -14,7 +14,8 @@ else
 fi
 
 # 1. create a new conda env from the spec.
-conda env create -f ./unix.yaml && conda activate test
+conda env create -f ./unix.yaml
+conda activate test
 
 # 2. install editable PandaModelsBackend
 git clone https://github.com/gt-sse-center/PandaModelsBackend.git && cd PandaModelsBackend

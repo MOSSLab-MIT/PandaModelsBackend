@@ -52,7 +52,7 @@ jobs:
             julia-version: "1.10"
             label: script
             runs-on: ubuntu-latest
-            shell: 'bash -el {0}'
+            shell: 'bash -l {0}'
 
     defaults:
       run:
@@ -73,7 +73,7 @@ jobs:
       with:
         activate-environment: test
         python-version: ${{ matrix.cfg.python-version }}
-        auto-activate-base: false
+        auto-activate-base: true
         show-channel-urls: true
         add-pip-as-python-dependency: true
         conda-remove-defaults: true
@@ -148,9 +148,13 @@ jobs:
     - name: Check all-in-one install script
       if: matrix.cfg.label == 'script'
       run: |
+        conda list
+        which conda python
         echo "::group::Prepare Environment"
         conda deactivate
         conda remove -n test --all
+        conda list
+        which conda python
         echo "::endgroup::"
         bash devtools/linux_conda_install.sh
 
