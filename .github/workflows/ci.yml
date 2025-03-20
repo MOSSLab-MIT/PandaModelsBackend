@@ -18,34 +18,6 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-          - conda-env: unix
-            python-version: "3.12"
-            julia-version: "1.10"
-            label: conda
-            runs-on: ubuntu-latest
-            shell: 'bash -l {0}'
-
-          - conda-env: null
-            python-version: "3.12"
-            julia-version: "1.10"
-            label: installer
-            runs-on: ubuntu-latest
-            shell: 'bash -e {0}'
-
-          - conda-env: unix
-            python-version: "3.12"
-            julia-version: "1.10"
-            label: conda
-            runs-on: macos-13
-            shell: 'bash -l {0}'
-
-          - conda-env: null
-            python-version: "3.12"
-            julia-version: "1.10"
-            label: installer
-            runs-on: macos-13
-            # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
-            shell: 'bash -e {0}'
 
           - conda-env: null
             python-version: "3.12"
@@ -72,12 +44,9 @@ jobs:
       uses: conda-incubator/setup-miniconda@v3
       with:
         # script will re-make "test" env later
-        activate-environment: test
-        python-version: ${{ matrix.cfg.python-version }}
-        auto-activate-base: false
         show-channel-urls: true
-        add-pip-as-python-dependency: true
-        conda-remove-defaults: true
+        auto-activate-base: true
+        activate-environment: ""
 
     - name: Install Conda Python ${{ matrix.cfg.python-version }} and power software
       if: matrix.cfg.label == 'conda'
@@ -149,10 +118,6 @@ jobs:
     - name: Check all-in-one install script
       if: matrix.cfg.label == 'script'
       run: |
-        echo "::group::Prepare Environment"
-        conda deactivate
-        conda remove -n test --all
-        echo "::endgroup::"
         source devtools/linux_conda_install.sh
 
     - name: Test PowerModels in Julia
