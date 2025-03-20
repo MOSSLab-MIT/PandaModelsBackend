@@ -18,6 +18,34 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
+          - conda-env: unix
+            python-version: "3.12"
+            julia-version: "1.10"
+            label: conda
+            runs-on: ubuntu-latest
+            shell: 'bash -l {0}'
+
+          - conda-env: null
+            python-version: "3.12"
+            julia-version: "1.10"
+            label: installer
+            runs-on: ubuntu-latest
+            shell: 'bash -e {0}'
+
+          - conda-env: unix
+            python-version: "3.12"
+            julia-version: "1.10"
+            label: conda
+            runs-on: macos-13
+            shell: 'bash -l {0}'
+
+          - conda-env: null
+            python-version: "3.12"
+            julia-version: "1.10"
+            label: installer
+            runs-on: macos-13
+            # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
+            shell: 'bash -e {0}'
 
           - conda-env: null
             python-version: "3.12"
@@ -43,7 +71,6 @@ jobs:
       if: matrix.cfg.label == 'script'
       uses: conda-incubator/setup-miniconda@v3
       with:
-        # script will re-make "test" env later
         show-channel-urls: true
         auto-activate-base: true
         activate-environment: ""
