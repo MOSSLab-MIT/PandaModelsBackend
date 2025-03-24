@@ -16,11 +16,12 @@ dependencies:
   - setuptools
   - pip
   - pip:
+    - pandamodelsbackend  # this repo. comment this, clone the repo, and `pip install -e .` to develop
     - grid2op
   # - lightsim2grid  # optional
   # - matpowercaseframes  # optional
   # - cxx-compiler  # optional if needed for further pip packages requiring compilation
 
 # Notes:
-# * py312 has been tested. others likely work
+# * py312 has been tested. others likely work. py313 may be blocked by requiring numpy v1
 # * works as-is for Linux and Intel Mac. conda packages for Julia aren't available for Silicon Mac.
