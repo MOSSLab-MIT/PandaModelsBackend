@@ -8,7 +8,7 @@ PandaModelsBackend provides a high-fidelity backend for [Grid2op](https://github
 
 ```pip install pandamodelsbackend```
 
-Refer to [test_basic_usage](tests/test_basic_usage.py) for full independently runable example.
+Refer to [test_basic_usage](pandamodelsbackend/tests/test_basic_usage.py) for full independently runable example.
 
 ```
 import grid2op
@@ -31,7 +31,7 @@ Both are shown below and are demonstrated (sort-of, for installers) in [GitHub A
 You'll need to separately install certain dependencies into Python and others into Julia. You never need to enter the Julia REPL.
 If you get tangled up, the CI file is a good, proven route to consult.
 [Docs at pandapower](https://pandapower.readthedocs.io/en/v2.6.0/opf/powermodels.html) may also be helpful.
-There are a lot of acceptable ways to get Python+Julia working, so as long as [`python-jl tests/test_backend_api.py`](tests/test_backend_api.py) is working at the end, you're probably good to run grid2op.
+There are a lot of acceptable ways to get Python+Julia working, so as long as [`python-jl pandamodelsbackend/tests/test_backend_api.py`](pandamodelsbackend/tests/test_backend_api.py) is working at the end, you're probably good to run grid2op.
 
 ##### Notes
 
@@ -92,7 +92,7 @@ pip install -e .
 
 ## Test
 ```
-cd tests
+cd pandamodelsbackend/tests
 python test_backend_api.py
 # depending on installation, `python-jl` may be needed instead of `python` above
 ```

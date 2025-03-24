@@ -222,12 +222,12 @@ jobs:
       if: runner.os == 'Linux' && matrix.cfg.label != 'script'
       run: |
         which python python-jl
-        python-jl tests/test_basic_usage.py
+        python-jl pandamodelsbackend/tests/test_basic_usage.py
 
     - name: Test PandaModelsBackend (API)
       if: matrix.cfg.label != 'script'
       run: |
-        python-jl tests/test_backend_api.py
+        python-jl pandamodelsbackend/tests/test_backend_api.py
 
     - name: Install pypa/build & build a binary wheel and a source tarball
       if: matrix.cfg.label == 'installer' && runner.os == 'Linux'

@@ -29,6 +29,13 @@
 #### Misc.
 
 
+## v0.1.4 / 2025-03-24
+
+#### New Features
+ * [\#6] (https://github.com/gt-sse-center/PandaModelsBackend/pull/6) Maint --
+   added installer script, part I.
+
+
 ## v0.1.3 / 2025-03-17
 
 #### New Features
