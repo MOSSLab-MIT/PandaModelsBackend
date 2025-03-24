@@ -67,7 +67,7 @@ jobs:
       with:
         sparse-checkout: |
           devtools/linux_conda_install.sh
-          conda-envs/unix.yaml
+          devtools/conda-envs/unix.yaml
           # last can be removed
         sparse-checkout-cone-mode: false
 

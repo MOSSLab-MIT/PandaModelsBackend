@@ -7,14 +7,15 @@
 # 0. copy a conda env spec file like [unix.yaml](https://github.com/gt-sse-center/PandaModelsBackend/blob/main/devtools/conda-envs/unix.yaml).
 #   This uses a wget or curl command like the below if not running this script from a repository clone.
 #   Customize python version, environment name, etc.
-if [ -f "./conda-envs/unix.yaml" ]; then
-    cp -p ./conda-envs/unix.yaml .
+if [ -f "./devtools/conda-envs/unix.yaml" ]; then
+    cp -p ./devtools/conda-envs/unix.yaml .
 else
     curl -o ./unix.yaml https://raw.githubusercontent.com/gt-sse-center/PandaModelsBackend/refs/heads/main/devtools/conda-envs/unix.yaml
     # wget -O ./unix.yaml https://raw.githubusercontent.com/gt-sse-center/PandaModelsBackend/refs/heads/main/devtools/conda-envs/unix.yaml
 fi
 
 # 1. create a new conda env from the spec.
+cat unix.yaml  # TODO RM
 conda env create -f ./unix.yaml && conda activate test
 
 # 2. install editable PandaModelsBackend
