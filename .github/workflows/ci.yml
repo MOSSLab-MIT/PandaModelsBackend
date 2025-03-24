@@ -63,9 +63,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      if: matrix.cfg.label == 'script'
       with:
         sparse-checkout: |
           devtools/linux_conda_install.sh
+          conda-envs/unix.yaml
+          # last can be removed
         sparse-checkout-cone-mode: false
 
     - uses: actions/checkout@v4
@@ -92,6 +95,8 @@ jobs:
         echo "::group::View Env Spec File for Conda (Edited)"
         cat unix.yaml
         echo "::endgroup::"
+        pwd
+        ls -l
 
     - name: Install Conda Python ${{ matrix.cfg.python-version }}
       if: matrix.cfg.label == 'script'
