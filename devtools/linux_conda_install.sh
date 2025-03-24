@@ -56,7 +56,7 @@ pyMm=$(python -c "import sys;print(f'{sys.version_info.major}.{sys.version_info.
 python-jl $CONDA_PREFIX/lib/python$pyMm/site-packages/pandapower/test/opf/test_pandamodels_runpm.py
 #>20 passed, 1 xpassed, 1226 warnings in 267.01s (0:04:27)
 ls -l $CONDA_PREFIX/lib/python$pyMm/site-packages/pandamodelsbackend/  # TODO RM
-#python-jl pandamodelsbackend/tests/test_backend_api.py  # TODO REENABLE
+python-jl $CONDA_PREFIX/lib/python$pyMm/site-packages/pandamodelsbackend/tests/test_backend_api.py
 #>Ran 31 tests in 58.499s
 #>OK
 

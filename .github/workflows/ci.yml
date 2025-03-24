@@ -47,6 +47,7 @@ jobs:
             # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
             shell: 'bash -e {0}'
 
+            # runs the script installing *released* software and a little testing
           - conda-env: null
             python-version: "3.12"
             julia-version: "1.10"
@@ -67,8 +68,7 @@ jobs:
       with:
         sparse-checkout: |
           devtools/linux_conda_install.sh
-          devtools/conda-envs/unix.yaml
-          # last can be removed
+          # devtools/conda-envs/unix.yaml  # if need local for changes
         sparse-checkout-cone-mode: false
 
     - uses: actions/checkout@v4
