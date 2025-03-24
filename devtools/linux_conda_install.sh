@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # This assumes you do have Miniconda/Anaconda installed.
-# It *doesn't* assume to have Julia installed and instead downloads Julia from Conda.
+# It *doesn't* assume you have Julia installed and instead downloads Julia from Conda.
+# It *doesn't* assume you've cloned the PandaModelsBackend and instead installs latest release. Change at step # 2.
 
 # 0. copy a conda env spec file like [unix.yaml](https://github.com/gt-sse-center/PandaModelsBackend/blob/main/devtools/conda-envs/unix.yaml).
 #   This uses a wget or curl command like the below if not running this script from a repository clone.
@@ -17,8 +18,8 @@ fi
 conda env create -f ./unix.yaml && conda activate test
 
 # 2. install editable PandaModelsBackend
-git clone https://github.com/gt-sse-center/PandaModelsBackend.git && cd PandaModelsBackend
-pip install -e .
+#git clone https://github.com/gt-sse-center/PandaModelsBackend.git && cd PandaModelsBackend
+#pip install -e .
 
 # 3. install PowerModels into Julia
 #    equivalent to entering pkg mode of Julia REPL, adding packages, and exiting REPL via:

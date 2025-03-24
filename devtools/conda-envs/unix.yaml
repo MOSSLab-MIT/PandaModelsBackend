@@ -16,6 +16,7 @@ dependencies:
   - setuptools
   - pip
   - pip:
+    - pandamodelsbackend  # this repo. comment this, clone the repo, and `pip install -e .` to develop
     - grid2op
   # - lightsim2grid  # optional
   # - matpowercaseframes  # optional

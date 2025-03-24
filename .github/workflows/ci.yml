@@ -63,9 +63,29 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      if: matrix.cfg.label != 'script'
       with:
         fetch-depth: 0
         persist-credentials: false
+
+    - name: Edit env file
+      if: matrix.cfg.label == 'conda'
+      run: |
+        echo "::group::View Env Spec File for Conda (from repo)"
+        cp devtools/conda-envs/${{ matrix.cfg.conda-env }}.yaml unix.yaml
+        cat unix.yaml
+        echo "::endgroup::"
+        if [[ "${{ runner.os }}" == "Linux" ]]; then
+          :
+          sed -i "s;- pandamodelsbackend;#- pandamodelsbackend;g" unix.yaml
+        fi
+        if [[ "${{ runner.os }}" == "macOS" ]]; then
+          :
+          sed -E -i.bak "s;- pandamodelsbackend;#- pandamodelsbackend;g" unix.yaml
+        fi
+        echo "::group::View Env Spec File for Conda (Edited)"
+        cat unix.yaml
+        echo "::endgroup::"
 
     - name: Install Conda Python ${{ matrix.cfg.python-version }}
       if: matrix.cfg.label == 'script'

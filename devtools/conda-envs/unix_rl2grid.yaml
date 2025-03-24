@@ -18,6 +18,7 @@ dependencies:
   - curl<8.10  # avoid segfault in Julia w/ curl v8.10 . recheck periodically
   - pip
   - pip:
+    - pandamodelsbackend  # this repo. comment this, clone the repo, and `pip install -e .` to develop
     - grid2op
     - lightsim2grid  # optional
     - matpowercaseframes  # optional
