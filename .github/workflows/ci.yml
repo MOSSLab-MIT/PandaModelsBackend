@@ -63,6 +63,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |
+          devtools/linux_conda_install.sh
+        sparse-checkout-cone-mode: false
+
+    - uses: actions/checkout@v4
       if: matrix.cfg.label != 'script'
       with:
         fetch-depth: 0
@@ -100,7 +106,7 @@ jobs:
       uses: conda-incubator/setup-miniconda@v3
       with:
         activate-environment: test
-        environment-file: devtools/conda-envs/${{ matrix.cfg.conda-env }}.yaml
+        environment-file: unix.yaml
         python-version: ${{ matrix.cfg.python-version }}
         auto-activate-base: false
         show-channel-urls: true
