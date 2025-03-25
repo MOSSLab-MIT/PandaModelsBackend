@@ -47,6 +47,7 @@ jobs:
             # runs-on: macos-latest  # fails b/c cbc can't compile on M1 (the GHA runners)
             shell: 'bash -e {0}'
 
+            # runs the script installing *released* software and a little testing
           - conda-env: null
             python-version: "3.12"
             julia-version: "1.10"
@@ -67,8 +68,7 @@ jobs:
       with:
         sparse-checkout: |
           devtools/linux_conda_install.sh
-          devtools/conda-envs/unix.yaml
-          # last can be removed
+          # devtools/conda-envs/unix.yaml  # if need local for changes
         sparse-checkout-cone-mode: false
 
     - uses: actions/checkout@v4
@@ -95,8 +95,6 @@ jobs:
         echo "::group::View Env Spec File for Conda (Edited)"
         cat unix.yaml
         echo "::endgroup::"
-        pwd
-        ls -l
 
     - name: Install Conda Python ${{ matrix.cfg.python-version }}
       if: matrix.cfg.label == 'script'
@@ -130,7 +128,7 @@ jobs:
         uname -p
         which python pip
         python --version
-        python -m pip install numpy pandas scipy pytest grid2op julia "pandapower==2.14.11"
+        python -m pip install numpy pandas scipy pytest grid2op julia "pandapower>=2.14,<3.0"
 
     - name: Install Julia ${{ matrix.cfg.julia-version }}
       if: matrix.cfg.label == 'installer'
@@ -138,24 +136,20 @@ jobs:
       with:
         version: ${{ matrix.cfg.julia-version }}
 
-    - name: Cache Julia
-      if: matrix.cfg.label == 'installer'
-      uses: julia-actions/cache@v2
-      with:
-        cache-name: ${{ matrix.cfg-runs-on }}-test-${{ matrix.cfg.julia-version }}-${{ matrix.cfg.python-version }}
-        cache-packages: false
-
     - name: Install Julia power software
       if: matrix.cfg.label != 'script'
       run: |
         julia -e '
             using Pkg
-            Pkg.add([
-                Pkg.PackageSpec(;name="Ipopt"),
-                Pkg.PackageSpec(;name="PowerModels", version="0.21.3"),
-                Pkg.PackageSpec(;name="PyCall"),
-                Pkg.PackageSpec(;url="https://github.com/loriab/PandaModels.jl", rev="update_pm")
-            ])'
+            # PwM alone for latest Ipopt and clean PwM test suite
+            Pkg.add(["PowerModels", "PyCall"])
+            # for experimenting with full stack. "update_pm" releases PdM version pins on Iptop, etc.
+            #Pkg.add([
+            #    Pkg.PackageSpec(;name="Ipopt"),
+            #    Pkg.PackageSpec(;name="PowerModels", version="0.21.3"),
+            #    Pkg.PackageSpec(;name="PyCall"),
+            #    Pkg.PackageSpec(;url="https://github.com/loriab/PandaModels.jl", rev="update_pm")
+            #])'
 
     - name: Install PandaModelsBackend
       if: matrix.cfg.label != 'script'
@@ -184,12 +178,13 @@ jobs:
       run: |
         julia -e 'using PyCall; math = pyimport("math"); print(math.sin(math.pi/4))'
         julia -e 'using Pkg; Pkg.test("PowerModels")'
-        # PM testing above is clean but takes 6m, so optionally toggle off
+        # PwM testing above is clean but takes 6m, so optionally toggle off
 
     - name: Test PandaModels in Julia
       if: matrix.cfg.label != 'script'
       run: |
-        julia -e 'using Pkg; Pkg.add(Pkg.PackageSpec(;name="Ipopt", version="0.9"))'
+        julia -e 'using Pkg; Pkg.add("PandaModels")'
+        #julia -e 'using Pkg; Pkg.add(Pkg.PackageSpec(;name="Ipopt", version="0.9"))'
         julia -e 'using Pkg; Pkg.status(); Pkg.status(outdated=true)'
         julia -e 'using PandaModels'
         julia -e 'using Pkg; Pkg.test("PandaModels")'
