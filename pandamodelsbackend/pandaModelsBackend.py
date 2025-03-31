@@ -56,36 +56,14 @@ class PandaModelsBackend(PandaPowerBackend):
             warnings.filterwarnings("ignore", category=RuntimeWarning)
             warnings.filterwarnings("ignore", category=DeprecationWarning)
             self._pf_init = "dc"
-            # nb_bus = self.get_nb_active_bus()
-            # if self._nb_bus_before is None:
-            #     self._pf_init = "dc"
-            # elif nb_bus == self._nb_bus_before:
-            #     self._pf_init = "results"
-            # else:
-            #     self._pf_init = "auto"
-
-            if (~self._grid.load["in_service"]).any():
-                # TODO see if there is a better way here -> do not handle this here, but rather in Backend._next_grid_state
-                raise pp.powerflow.LoadflowNotConverged("Disconnected load: for now grid2op cannot handle properly"
-                                                        " disconnected load. If you want to disconnect one, say it"
-                                                        " consumes 0. instead. Please check loads: "
-                                                        f"{(~self._grid.load['in_service'].values).nonzero()[0]}"
-                                                        )
-            if (~self._grid.gen["in_service"]).any():
-                # TODO see if there is a better way here -> do not handle this here, but rather in Backend._next_grid_state
-                raise pp.powerflow.LoadflowNotConverged("Disconnected gen: for now grid2op cannot handle properly"
-                                                        " disconnected generators. If you want to disconnect one, say it"
-                                                        " produces 0. instead. Please check generators: "
-                                                        f"{(~self._grid.gen['in_service'].values).nonzero()[0]}"
-                                                        )
             try:
                 if is_dc:
-                    #TODO: Call pm function here too
+                    # TODO: Could call PwMd function here too, but Ben says DC will be same
                     pp.rundcpp(self._grid, check_connectivity=True, init="flat")
 
                     # if I put check_connectivity=False then the test AAATestBackendAPI.test_22_islanded_grid_make_divergence
                     # does not pass
-                    
+
                     # if dc i start normally next time i call an ac powerflow
                     self._nb_bus_before = None
                 else:
@@ -130,14 +108,20 @@ class PandaModelsBackend(PandaPowerBackend):
         in case of "do nothing" action applied.
         """
         try:
+            # as pandapower does not modify the topology or the status of
+            # powerline, then we can compute the topology (and the line status)
+            # at the beginning
+            # This is also interesting in case of divergence :-)
+            self._get_line_status()
+            self._get_topo_vect()
             self._aux_runpf_pp(is_dc)
-            cls = type(self)     
+            cls = type(self)
             # if a connected bus has a no voltage, it's a divergence (grid was not connected)
             if self._grid.res_bus.loc[self._grid.bus["in_service"]]["va_degree"].isnull().any():
                 buses_ko = self._grid.res_bus.loc[self._grid.bus["in_service"]]["va_degree"].isnull()
                 buses_ko = buses_ko.values.nonzero()[0]
                 raise pp.powerflow.LoadflowNotConverged(f"Isolated bus, check buses {buses_ko} with `env.backend._grid.res_bus.iloc[{buses_ko}, :]`")
-                                           
+
             (
                 self.prod_p[:],
                 self.prod_q[:],
@@ -150,13 +134,8 @@ class PandaModelsBackend(PandaPowerBackend):
                 self.load_v[:],
                 self.load_theta[:],
             ) = self._loads_info()
-            
-            if not is_dc:
-                if not np.isfinite(self.load_v).all():
-                    # TODO see if there is a better way here
-                    # some loads are disconnected: it's a game over case!
-                    raise pp.powerflow.LoadflowNotConverged(f"Isolated load: check loads {np.isfinite(self.load_v).nonzero()[0]}")
-            else:
+
+            if is_dc:
                 # fix voltages magnitude that are always "nan" for dc case
                 # self._grid.res_bus["vm_pu"] is always nan when computed in DC
                 self.load_v[:] = self.load_pu_to_kv  # TODO
@@ -175,8 +154,8 @@ class PandaModelsBackend(PandaPowerBackend):
                             ):
                                 self.load_v[l_id] = self.prod_v[g_id]
                                 break
-                            
-            self.line_status[:] = self._get_line_status()
+                self.load_v[~self._grid.load["in_service"]] = 0.
+
             # I retrieve the data once for the flows, so has to not re read multiple dataFrame
             self.p_or[:] = self._aux_get_line_info("p_from_mw", "p_hv_mw")
             self.q_or[:] = self._aux_get_line_info("q_from_mvar", "q_hv_mvar")
@@ -222,19 +201,21 @@ class PandaModelsBackend(PandaPowerBackend):
                 self.storage_theta[:],
             ) = self._storages_info()
             deact_storage = ~np.isfinite(self.storage_v)
-            if (np.abs(self.storage_p[deact_storage]) > self.tol).any():
-                raise pp.powerflow.LoadflowNotConverged(
-                    "Isolated storage set to absorb / produce something"
-                )
             self.storage_p[deact_storage] = 0.0
             self.storage_q[deact_storage] = 0.0
             self.storage_v[deact_storage] = 0.0
             self._grid.storage["in_service"].values[deact_storage] = False
 
-            self._topo_vect[:] = self._get_topo_vect()
             if getattr(self._grid, 'converged', False) and getattr(self._grid, 'OPF_converged', False):
                 raise pp.powerflow.LoadflowNotConverged("Divergence without specific reason (self._grid.converged and self._grid.OPF_converged both are False)")
             self.div_exception = None
+            if is_dc:
+                # pandapower apparently does not set 0 for q in DC...
+                self.prod_q[:] = 0.
+                self.load_q[:] = 0.
+                self.storage_q[:] = 0.
+                self.q_or[:] = 0.
+                self.q_ex[:] = 0.
             return True, None
 
         except pp.powerflow.LoadflowNotConverged as exc_:
