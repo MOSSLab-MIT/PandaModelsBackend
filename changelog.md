@@ -13,6 +13,8 @@
 
 #### Misc.
 
+#### (Unmerged)
+
 -->
 
 
@@ -28,18 +30,26 @@
 
 #### Misc.
 
+#### (Unmerged)
+ * [\#9] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/9) Upgrade --
+   trim class after inheriting from PandaPowerBackend instead of generic Backend.
+   Incorporated upstream changes from dev_1.11.0 (as of 31 Mar); previously
+   based off master/v1.10.5.
+ * [\#10] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/10) Maint --
+   change GitHub organization owner for repo and links within.
+
 
 ## v0.1.4 / 2025-03-24
 
 #### New Features
- * [\#6] (https://github.com/gt-sse-center/PandaModelsBackend/pull/6) Maint --
+ * [\#6] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/6) Maint --
    added installer script, part I.
 
 
 ## v0.1.3 / 2025-03-17
 
 #### New Features
- * [\#4] (https://github.com/gt-sse-center/PandaModelsBackend/pull/4) Maint --
+ * [\#4] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/4) Maint --
    added Conda install notes, refined dependencies.
 
 
@@ -48,12 +58,12 @@
 #### Breaking Changes
 
 #### New Features
- * [\#1] (https://github.com/gt-sse-center/PandaModelsBackend/pull/1) Maint --
+ * [\#1] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/1) Maint --
    added CI to show how to set up working environment with and without conda.
- * [\#2] (https://github.com/gt-sse-center/PandaModelsBackend/pull/2) Main --
+ * [\#2] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/2) Main --
    copied backend from grid2op, made modifications to call PandaPower, checked
    against AAA backend tests, and excused some until next v0.11 grid2op release.
- * [\#3] (https://github.com/gt-sse-center/PandaModelsBackend/pull/4) Maint --
+ * [\#3] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/4) Maint --
    add versioning, PYPI publishing, and figure.
 
 #### Enhancements

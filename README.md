@@ -2,7 +2,7 @@
 
 PandaModelsBackend provides a high-fidelity backend for [Grid2op](https://github.com/Grid2op/grid2op) that uses [PowerModels.jl](https://github.com/lanl-ansi/PowerModels.jl). It achieves this using a [pandapower](https://github.com/e2nIEE/pandapower) interface that calls [PandaModels.jl](https://github.com/e2nIEE/PandaModels.jl) using PyCall to call Julia functions from Python.
 
-<img src="https://github.com/gt-sse-center/PandaModelsBackend/blob/main/devtools/power_software_map.png" height=450>
+<img src="https://github.com/MOSSLab-MIT/PandaModelsBackend/blob/main/devtools/power_software_map.png" height=450>
 
 ## Installation & Usage
 
@@ -78,13 +78,13 @@ A Linux install script is provided at [linux_conda_install.sh](devtools/linux_co
 
 0. copy a conda env spec file like [unix.yaml](devtools/conda-envs/unix.yaml). Customize python version, environment name, etc.
 
-https://github.com/gt-sse-center/PandaModelsBackend/blob/d13dcd6fd43edecb3819562ec11398aa576d71e7/devtools/linux_conda_install.sh#L16-L58
+https://github.com/MOSSLab-MIT/PandaModelsBackend/blob/aebe1775303c24ad74eeed20643650ad534afdc4/devtools/linux_conda_install.sh#L16-L58
 
 -----
 
 ## Build
 ```
-git clone https://github.com/gt-sse-center/PandaModelsBackend.git
+git clone https://github.com/MOSSLab-MIT/PandaModelsBackend.git
 cd PandaModelsBackend
 python3 -m build
 pip install -e .
@@ -102,7 +102,7 @@ python test_backend_api.py
 ## Release Procedure
 
 * On a local clone on branch `main`, update the [CHANGELOG](changelog.md) with PRs, the new version number, and the release date. Commit it.
-* Make an annotated tag for the new version. Push it along with any cleanup commits (e.g., changelog above). If you've forked the repo, "origin" will probably be "upstream". See `git remote -v` for names. You may need to disable direct push in [Settings](https://github.com/gt-sse-center/PandaModelsBackend/settings) (Branches, `main`, Edit)
+* Make an annotated tag for the new version. Push it along with any cleanup commits (e.g., changelog above). If you've forked the repo, "origin" will probably be "upstream". See `git remote -v` for names. You may need to disable direct push in [Settings](https://github.com/MOSSLab-MIT/PandaModelsBackend/settings) (Branches, `main`, Edit)
 ```
 git tag -a v0.5.0 -m "v0.5.0"
 git push --atomic origin main v0.5.0
