@@ -27,9 +27,9 @@ dependencies = [
 ]
 
 [project.urls]
-repository = "https://github.com/gt-sse-center/PandaModelsBackend"
-changelog = "https://github.com/gt-sse-center/PandaModelsBackend/blob/main/changelog.md"
-issues = "https://github.com/gt-sse-center/PandaModelsBackend/issues"
+repository = "https://github.com/MOSSLab-MIT/PandaModelsBackend"
+changelog = "https://github.com/MOSSLab-MIT/PandaModelsBackend/blob/main/changelog.md"
+issues = "https://github.com/MOSSLab-MIT/PandaModelsBackend/issues"
 
 [project.optional-dependencies]
 tests = [

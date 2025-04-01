@@ -4,21 +4,21 @@
 # It *doesn't* assume you have Julia installed and instead downloads Julia from Conda.
 # It *doesn't* assume you've cloned the PandaModelsBackend and instead installs latest release. Change at step # 2.
 
-# 0. copy a conda env spec file like [unix.yaml](https://github.com/gt-sse-center/PandaModelsBackend/blob/main/devtools/conda-envs/unix.yaml).
+# 0. copy a conda env spec file like [unix.yaml](https://github.com/MOSSLab-MIT/PandaModelsBackend/blob/main/devtools/conda-envs/unix.yaml).
 #   This uses a wget or curl command like the below if not running this script from a repository clone.
 #   Customize python version, environment name, etc.
 if [ -f "./devtools/conda-envs/unix.yaml" ]; then
     cp -p ./devtools/conda-envs/unix.yaml .
 else
-    curl -o ./unix.yaml https://raw.githubusercontent.com/gt-sse-center/PandaModelsBackend/refs/heads/main/devtools/conda-envs/unix.yaml
-    # wget -O ./unix.yaml https://raw.githubusercontent.com/gt-sse-center/PandaModelsBackend/refs/heads/main/devtools/conda-envs/unix.yaml
+    curl -o ./unix.yaml https://raw.githubusercontent.com/MOSSLab-MIT/PandaModelsBackend/refs/heads/main/devtools/conda-envs/unix.yaml
+    # wget -O ./unix.yaml https://raw.githubusercontent.com/MOSSLab-MIT/PandaModelsBackend/refs/heads/main/devtools/conda-envs/unix.yaml
 fi
 
 # 1. create a new conda env from the spec.
 conda env create -f ./unix.yaml && conda activate test
 
 # 2. install editable PandaModelsBackend
-#git clone https://github.com/gt-sse-center/PandaModelsBackend.git && cd PandaModelsBackend
+#git clone https://github.com/MOSSLab-MIT/PandaModelsBackend.git && cd PandaModelsBackend
 #pip install -e .
 
 # 3. install PowerModels into Julia
