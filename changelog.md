@@ -35,6 +35,8 @@
    trim class after inheriting from PandaPowerBackend instead of generic Backend.
    Incorporated upstream changes from dev_1.11.0 (as of 31 Mar); previously
    based off master/v1.10.5.
+ * [\#10] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/10) Maint --
+   change GitHub organization owner for repo and links within.
 
 
 ## v0.1.4 / 2025-03-24
