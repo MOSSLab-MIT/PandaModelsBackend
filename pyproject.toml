@@ -23,7 +23,7 @@ dependencies = [
     "pandas",
     "pandapower<3.0",
     # packaging?
-    "grid2op",
+    "grid2op<1.11",
 ]
 
 [project.urls]

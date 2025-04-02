@@ -35,8 +35,17 @@
    trim class after inheriting from PandaPowerBackend instead of generic Backend.
    Incorporated upstream changes from dev_1.11.0 (as of 31 Mar); previously
    based off master/v1.10.5.
+
+
+## v0.2.0 / 2025-04-02
+
+#### Enhancements
+ * [\#7] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/7) Maint --
+   added installer script and simplify GHA testing.
  * [\#10] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/10) Maint --
    change GitHub organization owner for repo and links within.
+ * [\#11] (https://github.com/MOSSLab-MIT/PandaModelsBackend/pull/11) Maint --
+   added changelog, constrain to grid2op v1.10.
 
 
 ## v0.1.4 / 2025-03-24
