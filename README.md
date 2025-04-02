@@ -78,7 +78,7 @@ A Linux install script is provided at [linux_conda_install.sh](devtools/linux_co
 
 0. copy a conda env spec file like [unix.yaml](devtools/conda-envs/unix.yaml). Customize python version, environment name, etc.
 
-https://github.com/MOSSLab-MIT/PandaModelsBackend/blob/aebe1775303c24ad74eeed20643650ad534afdc4/devtools/linux_conda_install.sh#L16-L58
+https://github.com/MOSSLab-MIT/PandaModelsBackend/blob/7957d082059d4c48554021150599809222f32e5d/devtools/linux_conda_install.sh#L17-L59
 
 -----
 
