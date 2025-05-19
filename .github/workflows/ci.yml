@@ -40,7 +40,7 @@ jobs:
             shell: 'bash -l {0}'
 
           - conda-env: null
-            python-version: "3.12"
+            python-version: "3.12.9"  # match with "warning: hard coded path" below
             julia-version: "1.10"
             label: installer
             runs-on: macos-13
