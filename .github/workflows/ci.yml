@@ -40,7 +40,7 @@ jobs:
             shell: 'bash -l {0}'
 
           - conda-env: null
-            python-version: "3.12"
+            python-version: "3.12"  # even patch updates (M.m.p) need editing to match with "warning: hard coded path" below
             julia-version: "1.10"
             label: installer
             runs-on: macos-13
@@ -195,7 +195,7 @@ jobs:
       if: matrix.cfg.label == 'installer' && runner.os == 'macOS'
       run: |
         # warning: hard coded path
-        julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.9/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
+        julia -e 'ENV["PYTHON"]="/Users/runner/hostedtoolcache/Python/3.12.10/x64/bin/python"; using Pkg; Pkg.build("PyCall")'
 
     - name: Special setup download delay
       if: false  # runner.os == 'macOS'
